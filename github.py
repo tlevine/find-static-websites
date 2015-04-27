@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import re
+
 import requests
 from lxml.html import fromstring
 from vlermv import cache
@@ -13,20 +15,28 @@ def main():
         w = csv.writer(sys.stdout)
         w.writerow(('domain', 'source_code'))
         for line in sys.stdin:
-            domain = line.strip()
+            domain = _extract_domain(line.strip())
             sys.stderr.write('Checking %s\n' % domain)
             if is_gh_pages(domain):
                 sys.stderr.write('%s is on GitHub pages, looking for source code\n' % domain)
                 w.writerow((domain, gh_url(domain)))
     else:
         at_least_one = False
-        for domain in sys.argv[1:]:
+        for url in sys.argv[1:]:
+            domain = _extract_domain(url)
             if is_gh_pages(domain):
                 sys.stdout.write(gh_url(domain) + '\n')
                 at_least_one = True
         if not at_least_one:
             sys.stderr.write('No matches\n')
             sys.exit(1)
+
+def _extract_domain(url):
+    '''
+    >>> _extract_domain('https://thomaslevine.com')
+    thomaslevine.com
+    '''
+    return re.sub(r'https?://([^/]+).*', r'\1', url)
 
 def is_gh_pages(x):
     try:
