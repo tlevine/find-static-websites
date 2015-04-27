@@ -51,7 +51,7 @@ def gh_url(x):
 
 @cache('~/.find-static-websites/domain')
 def download_domain(domain):
-    return requests.head('http://%s/' % domain, headers = HEADERS)
+    return requests.head('http://%s/' % domain, headers = HEADERS, allow_redirects = True)
 
 def parse_domain(response):
     return response.headers.get('server') == 'GitHub.com'
