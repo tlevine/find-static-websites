@@ -17,7 +17,12 @@ def main():
             w.writerow((domain, gh_url(domain)))
 
 def is_gh_pages(x):
-    return parse_domain(download_domain(x))
+    try:
+        r = download_domain(x)
+    except requests.exceptions.ConnectionError:
+        return False
+    else:
+        return parse_domain(r)
 
 def gh_url(x):
     return parse_github_search(download_github_search(x))
