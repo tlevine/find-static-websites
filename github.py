@@ -9,14 +9,24 @@ HEADERS = {
 
 def main():
     import csv, sys
-    w = csv.writer(sys.stdout)
-    w.writerow(('domain', 'source_code'))
-    for line in sys.stdin:
-        domain = line.strip()
-        sys.stderr.write('Checking %s\n' % domain)
-        if is_gh_pages(domain):
-            sys.stderr.write('%s is on GitHub pages, looking for source code\n' % domain)
-            w.writerow((domain, gh_url(domain)))
+    if len(sys.argv) == 1:
+        w = csv.writer(sys.stdout)
+        w.writerow(('domain', 'source_code'))
+        for line in sys.stdin:
+            domain = line.strip()
+            sys.stderr.write('Checking %s\n' % domain)
+            if is_gh_pages(domain):
+                sys.stderr.write('%s is on GitHub pages, looking for source code\n' % domain)
+                w.writerow((domain, gh_url(domain)))
+    else:
+        at_least_one = False
+        for domain in sys.argv[1:]:
+            if is_gh_pages(domain):
+                sys.stdout.write(gh_url(domain) + '\n')
+                at_least_one = True
+        if not at_least_one:
+            sys.stderr.write('No matches\n')
+            sys.exit(1)
 
 def is_gh_pages(x):
     try:
