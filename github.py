@@ -11,7 +11,8 @@ def main():
     import csv, sys
     w = csv.writer(sys.stdout)
     w.writerow(('domain', 'source_code'))
-    for domain in ['csv.nyc']:
+    for line in sys.stdin:
+        domain = line.strip()
         if is_gh_pages(domain):
             w.writerow((domain, gh_url(domain)))
 
