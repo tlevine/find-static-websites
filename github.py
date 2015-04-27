@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-import fileinput
-
 import requests
 from lxml.html import fromstring
 from vlermv import cache
@@ -13,7 +11,7 @@ def main():
     import csv, sys
     w = csv.writer(sys.stdout)
     w.writerow(('domain', 'source_code'))
-    for line in fileinput.input():
+    for line in sys.stdin:
         domain = line.strip()
         sys.stderr.write('Checking %s\n' % domain)
         if is_gh_pages(domain):
