@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import requests
 from lxml.html import fromstring
 from vlermv import cache
