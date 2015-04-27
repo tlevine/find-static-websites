@@ -1,0 +1,5 @@
+#!/bin/sh
+domain=$(echo "$1"|sed -r 's+https?://([^/]*)/+\1+')
+echo $domain
+exit
+curl --head "http://$domain/"|grep 'Server: GitHub.com' > /dev/null
