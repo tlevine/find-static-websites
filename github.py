@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import fileinput
+
 import requests
 from lxml.html import fromstring
 from vlermv import cache
@@ -11,9 +13,11 @@ def main():
     import csv, sys
     w = csv.writer(sys.stdout)
     w.writerow(('domain', 'source_code'))
-    for line in sys.stdin:
+    for line in fileinput.input():
         domain = line.strip()
+        sys.stderr.write('Checking %s\n' % domain)
         if is_gh_pages(domain):
+            sys.stderr.write('%s is on GitHub pages, looking for source code\n' % domain)
             w.writerow((domain, gh_url(domain)))
 
 def is_gh_pages(x):
@@ -32,7 +36,7 @@ def download_domain(domain):
     return requests.head('http://%s/' % domain, headers = HEADERS)
 
 def parse_domain(response):
-    return response.headers['server'] == 'GitHub.com'
+    return response.headers.get('server') == 'GitHub.com'
 
 @cache('~/.find-static-websites/github_search')
 def download_github_search(domain):
